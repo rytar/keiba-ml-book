@@ -234,6 +234,8 @@ def main():
         horse_urls.update(_horse_urls)
 
     save_dict_as_json(race_data, './data/race_data.json')
+
+    print('')
     
     htmls = scraper.run(horse_urls.values(), keys=list(horse_urls.keys()))
 
@@ -245,6 +247,8 @@ def main():
         horse_data[horse_name] = analyze_horse_data(htmls[horse_name])
 
     save_dict_as_json(horse_data, './data/horse_data.json')
+
+    print('')
         
 
 if __name__ == '__main__':
