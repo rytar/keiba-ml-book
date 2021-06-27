@@ -1,6 +1,9 @@
 import itertools
 from src.Scraper import Scraper
 
+def analyze(html):
+
+
 def main():
     start_year = 2011
     end_year = 2020
@@ -14,7 +17,7 @@ def main():
     urls = [ 'https://race.netkeiba.com/race/result.html?race_id={}'.format(race_id) for race_id in race_ids ]
 
     scraper = Scraper()
-    htmls = scraper.run(urls)
+    htmls = scraper.run(urls, keys=race_ids)
 
 if __name__ == '__main__':
     main()
