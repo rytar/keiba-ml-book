@@ -20,9 +20,7 @@ class Scraper:
                 else:
                     self.htmls[key] = res.content
             except Exception as e:
-                print('Error has occurred!')
-                if key != None:
-                    print('key: ' + str(key))
+                print('[Error] Connection Error: key ' + str(key))
                 print(e)
 
         return func
@@ -44,22 +42,25 @@ class Scraper:
         print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
         print('')
 
-        threads = list()
+        size = 100
 
-        for i, url in enumerate(tqdm(urls)):
-            if keys == None:
-                t = threading.Thread(target=self.__get_html(url))
-            else:
-                t = threading.Thread(target=self.__get_html(url, key=keys[i]))
-            t.start()
-            threads.append(t)
-            time.sleep(self.__sleep_time)
+        for s in range(int(l / size)):
+            threads = list()
 
-        print('\n[Info] Waiting for all threads.\n')
+            for i, url in enumerate(tqdm(urls[s * size : min((s + 1) * size, l)])):
+                if keys == None:
+                    t = threading.Thread(target=self.__get_html(url))
+                else:
+                    t = threading.Thread(target=self.__get_html(url, key=keys[i]))
+                t.start()
+                threads.append(t)
+                time.sleep(self.__sleep_time)
 
-        for t in tqdm(threads):
-            t.join()
+            print('\n[Info] Waiting for all threads.\n')
 
-        print('')
+            for t in tqdm(threads):
+                t.join()
+
+            print('')
 
         return self.htmls
