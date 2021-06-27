@@ -22,6 +22,8 @@ class Scraper:
         
 
     def run(self, urls):
+        print('[Info] Start scraping ' + str(len(urls)) + ' urls.')
+        
         self.htmls = list()
 
         base_time = time.time()
