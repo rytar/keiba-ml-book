@@ -222,7 +222,7 @@ def main():
     urls = [ 'https://race.netkeiba.com/race/result.html?race_id={}'.format(race_id) for race_id in race_ids ]
 
     scraper = Scraper()
-    htmls = scraper.run(urls[:3], keys=race_ids[:3])
+    htmls = scraper.run(urls, keys=race_ids)
 
     race_data = dict()
     horse_urls = dict()
