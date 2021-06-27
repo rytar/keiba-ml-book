@@ -43,7 +43,7 @@ class Scraper:
         print('')
 
         size = 1000
-        bar = tqdm(total=l, desc='progress', ncols=50)
+        bar = tqdm(total=l, desc='progress', ncols=100)
         for s in range(int(l / size)):
             threads = list()
 
