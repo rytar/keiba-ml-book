@@ -13,14 +13,14 @@ class Scraper:
     def __get_html(self, url, key=None):
         def func():
             try:
-                res = requests.get(url)
+                res = requests.get(url, timeout=30.0)
                 res.raise_for_status()
                 if key == None:
                     self.htmls.append(res.content)
                 else:
                     self.htmls[key] = res.content
             except Exception as e:
-                print('[Error] Connection Error: key ' + str(key))
+                print('\n[Error] Connection Error: key ' + str(key))
                 print(e)
 
         return func
@@ -42,7 +42,7 @@ class Scraper:
         print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
         print('')
 
-        size = 1000
+        size = 30
         bar = tqdm(total=l, desc='progress', ncols=100)
         for s in range(int(l / size)):
             threads = list()
@@ -57,7 +57,7 @@ class Scraper:
                 bar.update(1)
                 time.sleep(self.__sleep_time)
 
-            for t in tqdm(threads):
+            for t in threads:
                 t.join()
 
         print('')
