@@ -1,6 +1,7 @@
 import requests
 import time
 import threading
+import datetime
 from tqdm import tqdm
 
 class Scraper:
@@ -22,8 +23,9 @@ class Scraper:
         
 
     def run(self, urls):
-        print('[Info] Start scraping ' + str(len(urls)) + ' urls.')
-        
+        dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))) + datetime.timedelta(seconds=len(urls) * self.__sleep_time)
+        print('[Info] Start scraping ' + str(len(urls)) + ' urls.  This will finish until ' + str(dt))
+
         self.htmls = list()
 
         base_time = time.time()
