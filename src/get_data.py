@@ -2,7 +2,7 @@ import itertools
 from src.Scraper import Scraper
 
 def analyze(html):
-
+    pass
 
 def main():
     start_year = 2011
@@ -18,6 +18,7 @@ def main():
 
     scraper = Scraper()
     htmls = scraper.run(urls, keys=race_ids)
+    print(htmls)
 
 if __name__ == '__main__':
     main()

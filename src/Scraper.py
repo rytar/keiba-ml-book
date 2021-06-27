@@ -10,12 +10,15 @@ class Scraper:
         self.__sleep_time = sleep_time
 
     
-    def __get_html(self, url, key):
+    def __get_html(self, url, key=None):
         def func():
             try:
                 res = requests.get(url)
                 res.raise_for_status()
-                self.htmls[key] = res.content
+                if key == None:
+                    self.htmls.append(res.content)
+                else:
+                    self.htmls[key] = res.content
             except Exception as e:
                 print(e)
 
@@ -24,27 +27,31 @@ class Scraper:
 
     def run(self, urls, keys=None):
         l = len(urls)
-        self.htmls = dict()
 
-        if len(keys) != l:
+        if keys == None:
+            self.htmls = list()
+        else:
+            self.htmls = dict()
+
+        if keys != None and len(keys) != l:
             print('[Error] The length of keys must be the same as the length of urls.')
             return self.htmls
 
         dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))) + datetime.timedelta(seconds=l * self.__sleep_time)
         print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
 
-        if keys == None:
-            keys = range(l)
+        threads = list()
 
-        base_time = time.time()
-        next_time = 0
-        bar = tqdm(total=l)
-        bar.set_description('progress')
-        for url, key in zip(urls, keys):
-            t = threading.Thread(target=self.__get_html(url, key))
+        for i, url in enumerate(tqdm(urls)):
+            if keys == None:
+                t = threading.Thread(target=self.__get_html(url))
+            else:
+                t = threading.Thread(target=self.__get_html(url, keys[i]))
             t.start()
-            bar.update(1)
-            next_time = ((base_time - time.time()) % self.__sleep_time) or self.__sleep_time
-            time.sleep(next_time)
+            threads.append(t)
+            time.sleep(self.__sleep_time)
+
+        for t in threads:
+            t.join()
 
         return self.htmls
