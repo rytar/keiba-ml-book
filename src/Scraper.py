@@ -42,25 +42,24 @@ class Scraper:
         print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
         print('')
 
-        size = 100
-
+        size = 1000
+        bar = tqdm(total=l, desc='progress')
         for s in range(int(l / size)):
             threads = list()
 
-            for i, url in enumerate(tqdm(urls[s * size : min((s + 1) * size, l)])):
+            for i, url in enumerate(urls[s * size : min((s + 1) * size, l)]):
                 if keys == None:
                     t = threading.Thread(target=self.__get_html(url))
                 else:
                     t = threading.Thread(target=self.__get_html(url, key=keys[i]))
                 t.start()
                 threads.append(t)
+                bar.update(1)
                 time.sleep(self.__sleep_time)
-
-            print('\n[Info] Waiting for all threads.\n')
 
             for t in tqdm(threads):
                 t.join()
 
-            print('')
+        print('')
 
         return self.htmls
