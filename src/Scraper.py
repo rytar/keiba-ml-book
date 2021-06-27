@@ -1,6 +1,7 @@
 import requests
 import time
 import threading
+import datetime
 from tqdm import tqdm
 
 class Scraper:
@@ -9,27 +10,51 @@ class Scraper:
         self.__sleep_time = sleep_time
 
     
-    def __get_html(self, url):
+    def __get_html(self, url, key=None):
         def func():
             try:
                 res = requests.get(url)
                 res.raise_for_status()
-                self.htmls.append(res.content)
+                if key == None:
+                    self.htmls.append(res.content)
+                else:
+                    self.htmls[key] = res.content
             except Exception as e:
                 print(e)
 
         return func
         
 
-    def run(self, urls):
-        self.htmls = list()
+    def run(self, urls, keys=None):
+        l = len(urls)
 
-        base_time = time.time()
-        next_time = 0
-        for url in tqdm(urls):
-            t = threading.Thread(target=self.__get_html(url))
+        if keys == None:
+            self.htmls = list()
+        else:
+            self.htmls = dict()
+
+        if keys != None and len(keys) != l:
+            print('[Error] The length of keys must be the same as the length of urls.')
+            return self.htmls
+
+        dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))) + datetime.timedelta(seconds=l * self.__sleep_time)
+        print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
+        print('')
+
+        threads = list()
+
+        for i, url in enumerate(tqdm(urls)):
+            if keys == None:
+                t = threading.Thread(target=self.__get_html(url))
+            else:
+                t = threading.Thread(target=self.__get_html(url, key=keys[i]))
             t.start()
-            next_time = ((base_time - time.time()) % self.__sleep_time) or self.__sleep_time
-            time.sleep(next_time)
+            threads.append(t)
+            time.sleep(self.__sleep_time)
+
+        for t in threads:
+            t.join()
+
+        print('')
 
         return self.htmls
