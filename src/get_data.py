@@ -248,10 +248,16 @@ def main():
     save_dict_as_json(race_data, race_data_path)
 
     print('')
-    
-    htmls = scraper.run(horse_urls.values(), keys=list(horse_urls.keys()))
 
     horse_data = dict()
+
+    if path.exists(horse_data_path):
+        with open(horse_data_path, 'r') as f:
+            horse_data = json.load(f)
+            for horse_name in horse_data.keys():
+                del horse_urls[horse_name]
+    
+    htmls = scraper.run(horse_urls.values(), keys=list(horse_urls.keys()))
 
     print('analyze html about horse')
 
