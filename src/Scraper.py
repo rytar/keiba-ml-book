@@ -20,6 +20,9 @@ class Scraper:
                 else:
                     self.htmls[key] = res.content
             except Exception as e:
+                print('Error has occurred!')
+                if key != None:
+                    print('key: ' + str(key))
                 print(e)
 
         return func
