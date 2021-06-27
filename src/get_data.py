@@ -4,6 +4,7 @@ import json
 import re
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from os import path
 from src.Scraper import Scraper
 
 def analyze_race_data(html, race_id):
@@ -219,6 +220,17 @@ def main():
     race_nums = [ str(i + 1).zfill(2) for i in range(12) ]
     race_ids = list(itertools.product(years, codes, race_counts, days, race_nums))
     race_ids = [ ''.join(race_id) for race_id in race_ids ]
+
+    race_data_path = './data/race_data.json'
+    horse_data_path = './data/horse_data.json'
+
+    race_data = dict()
+
+    if path.exists(race_data_path):
+        with open(race_data_path, 'r') as f:
+            race_data = json.load(f)
+            race_ids = list(set(race_ids) - set(race_data.keys()))
+    
     urls = [ 'https://race.netkeiba.com/race/result.html?race_id={}'.format(race_id) for race_id in race_ids ]
 
     scraper = Scraper()
@@ -233,7 +245,7 @@ def main():
         race_data[race_id], _horse_urls = analyze_race_data(htmls[race_id], race_id)
         horse_urls.update(_horse_urls)
 
-    save_dict_as_json(race_data, './data/race_data.json')
+    save_dict_as_json(race_data, race_data_path)
 
     print('')
     
@@ -246,7 +258,7 @@ def main():
     for horse_name in tqdm(htmls):
         horse_data[horse_name] = analyze_horse_data(htmls[horse_name])
 
-    save_dict_as_json(horse_data, './data/horse_data.json')
+    save_dict_as_json(horse_data, horse_data_path)
 
     print('')
         
