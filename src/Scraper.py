@@ -39,6 +39,7 @@ class Scraper:
 
         dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))) + datetime.timedelta(seconds=l * self.__sleep_time)
         print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
+        print('')
 
         threads = list()
 
@@ -46,12 +47,14 @@ class Scraper:
             if keys == None:
                 t = threading.Thread(target=self.__get_html(url))
             else:
-                t = threading.Thread(target=self.__get_html(url, keys[i]))
+                t = threading.Thread(target=self.__get_html(url, key=keys[i]))
             t.start()
             threads.append(t)
             time.sleep(self.__sleep_time)
 
         for t in threads:
             t.join()
+
+        print('')
 
         return self.htmls
