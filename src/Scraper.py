@@ -52,7 +52,9 @@ class Scraper:
             threads.append(t)
             time.sleep(self.__sleep_time)
 
-        for t in threads:
+        print('\n[Info] Waiting for all threads.\n')
+
+        for t in tqdm(threads):
             t.join()
 
         print('')
