@@ -3,6 +3,7 @@ import time
 import threading
 import datetime
 from tqdm import tqdm
+from collections import OrderedDict
 
 class Scraper:
 
@@ -31,7 +32,7 @@ class Scraper:
         if keys == None:
             self.htmls = list()
         else:
-            self.htmls = dict()
+            self.htmls = OrderedDict()
 
         if keys != None and len(keys) != l:
             print('[Error] The length of keys must be the same as the length of urls.')
