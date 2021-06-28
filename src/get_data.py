@@ -5,7 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 from os import path
-from src.Scraper import Scraper
+from Scraper import Scraper
 
 def analyze_race_data(html, race_id):
     soup = BeautifulSoup(html, 'lxml')
