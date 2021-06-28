@@ -212,7 +212,7 @@ def save_dict_as_json(d, filepath):
 
 def main():
     start_year = 2011
-    end_year = 2020
+    end_year = 2011
     years = [ str(year) for year in range(start_year, end_year + 1) ]
     codes = [ str(i + 1).zfill(2) for i in range(10) ]
     race_counts = [ str(i + 1).zfill(2) for i in range(6) ]
@@ -257,7 +257,7 @@ def main():
             for horse_name in horse_data.keys():
                 del horse_urls[horse_name]
     
-    htmls = scraper.run(horse_urls.values(), keys=list(horse_urls.keys()))
+    htmls = scraper.run(list(horse_urls.values()), keys=list(horse_urls.keys()))
 
     print('analyze html about horse')
 

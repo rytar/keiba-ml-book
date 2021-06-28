@@ -2,12 +2,23 @@ import requests
 import time
 import threading
 import datetime
+import logging
 from tqdm import tqdm
 
 class Scraper:
 
     def __init__(self, sleep_time=1):
         self.__sleep_time = sleep_time
+        
+        self.__logger = logging.getLogger(__name__)
+        
+        fh = logging.FileHandler('./scraper.log', mode='w')
+        
+        fmt = logging.Formatter('%(asctime)s: %(message)s', '%Y-%m-%dT%H:%M:%S')
+        fh.setFormatter(fmt)
+        
+        self.__logger.addHandler(fh)
+        self.__logger.setLevel(logging.DEBUG)
 
     
     def __get_html(self, url, key=None):
@@ -20,7 +31,9 @@ class Scraper:
                 else:
                     self.htmls[key] = res.content
             except Exception as e:
-                print('\n[Error] Connection Error: key ' + str(key))
+                message = '[Error] Connection Error: key ' + str(key)
+                self.__logger.error(message)
+                print('\n' + message)
                 print(e)
 
         return func
@@ -35,11 +48,16 @@ class Scraper:
             self.htmls = dict()
 
         if keys != None and len(keys) != l:
-            print('[Error] The length of keys must be the same as the length of urls.')
+            message = '[Error] The length of keys must be the same as the length of urls.'
+            self.__logger.error(message)
+            print(message)
             return self.htmls
 
         dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))) + datetime.timedelta(seconds=l * self.__sleep_time)
-        print('[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt))
+        
+        message = '[Info] Start scraping ' + str(l) + ' urls.  This will finish until ' + str(dt)
+        self.__logger.info(message)
+        print(message)
         print('')
 
         size = 30
